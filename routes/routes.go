@@ -41,8 +41,13 @@ func SetupRoutes(r *gin.Engine) {
 	webhooks := api.Group("/webhook")
 	webhooks.Use(middleware.WebhookAuth())
 	{
-		webhooks.POST("/telegram", controllers.TelegramWebhookHandler)
+		//webhooks.POST("/telegram", controllers.TelegramWebhookHandler)
 		webhooks.POST("/email", controllers.EmailWebhookHandler)
 		webhooks.POST("/sms", controllers.SMSWebhookHandler)
 	}
+
+	api.POST(
+    "/webhook/telegram",
+    controllers.TelegramWebhookHandler,
+)
 }
