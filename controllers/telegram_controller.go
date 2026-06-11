@@ -7,21 +7,17 @@ import (
 	"io"
 	"log"
 
+	"expense-tracker/services"
+
 	"github.com/gin-gonic/gin"
 )
 
 type TelegramWebhook struct {
-	UpdateID int64 `json:"update_id"`
-
 	Message struct {
-		MessageID int64 `json:"message_id"`
-
 		Text string `json:"text"`
-
 		Chat struct {
 			ID int64 `json:"id"`
 		} `json:"chat"`
-
 		From struct {
 			ID int64 `json:"id"`
 		} `json:"from"`
@@ -30,29 +26,48 @@ type TelegramWebhook struct {
 
 func TelegramWebhookHandler(c *gin.Context) {
 
+
 	body, _ := io.ReadAll(c.Request.Body)
 
 	log.Println("RAW TELEGRAM PAYLOAD:")
 	log.Println(string(body))
 
 	c.Request.Body = io.NopCloser(bytes.NewBuffer(body))
-
 	var payload TelegramWebhook
-
 	if err := c.ShouldBindJSON(&payload); err != nil {
-
-		log.Println("BIND ERROR:", err)
-
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	log.Println("TEXT:", payload.Message.Text)
 	log.Println("CHAT ID:", payload.Message.Chat.ID)
 
-	c.JSON(http.StatusOK, gin.H{
-		"status": "received",
-	})
+	text := payload.Message.Text
+	chatID := payload.Message.Chat.ID
+	if chatID == 0 {
+		chatID = payload.Message.From.ID
+	}
+
+	if text == "" || chatID == 0 {
+		c.JSON(http.StatusOK, gin.H{"status": "ignored"})
+		return
+	}
+
+	amount := services.ExtractAmount(text)
+	if amount <= 0 {
+		c.JSON(http.StatusOK, gin.H{"status": "ignored", "reason": "no amount found"})
+		return
+	}
+
+	if err := services.ProcessExpenseForTelegram(chatID, services.ExpenseInput{
+		Amount:      amount,
+		Description: text,
+		Source:      "telegram",
+		RawText:     text,
+	}); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "telegram message received"})
 }
