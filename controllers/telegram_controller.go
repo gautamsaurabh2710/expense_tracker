@@ -26,7 +26,6 @@ type TelegramWebhook struct {
 
 func TelegramWebhookHandler(c *gin.Context) {
 
-
 	body, _ := io.ReadAll(c.Request.Body)
 
 	log.Println("RAW TELEGRAM PAYLOAD:")
@@ -65,7 +64,13 @@ func TelegramWebhookHandler(c *gin.Context) {
 		Source:      "telegram",
 		RawText:     text,
 	}); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		log.Println("PROCESS EXPENSE ERROR:", err)
+
+		c.JSON(http.StatusOK, gin.H{
+			"status": "received",
+			"error":  err.Error(),
+		})
 		return
 	}
 
