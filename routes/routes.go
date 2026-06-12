@@ -47,5 +47,13 @@ func SetupRoutes(r *gin.Engine) {
 		webhooks.POST("/sms", controllers.SMSWebhookHandler)
 	}
 
+	webhooks.POST("/telegram", controllers.TelegramWebhookHandler)
+
+	api.GET("/version", func(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"version": "telegram-code-v1",
+	})
+})
+
 	
 }
