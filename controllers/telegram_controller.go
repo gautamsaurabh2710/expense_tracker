@@ -53,6 +53,8 @@ func TelegramWebhookHandler(c *gin.Context) {
 
 	if strings.HasPrefix(text, "/link") {
 
+		log.Println("Entered Link Block")
+
 		code := strings.TrimSpace(
 			strings.Replace(text, "/link", "", 1),
 		)
