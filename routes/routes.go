@@ -36,6 +36,7 @@ func SetupRoutes(r *gin.Engine) {
 		protected.PUT("/user", controllers.UpdateUser)
 		protected.DELETE("/user/:id", controllers.DeleteUser)
 		protected.POST("/tracking/preferences", controllers.UpdateTrackingPreferences)
+		protected.POST("/telegram/generate-code", controllers.GenerateTelegramCode)
 	}
 
 	webhooks := api.Group("/webhook")
@@ -46,8 +47,5 @@ func SetupRoutes(r *gin.Engine) {
 		webhooks.POST("/sms", controllers.SMSWebhookHandler)
 	}
 
-	api.POST(
-    "/webhook/telegram",
-    controllers.TelegramWebhookHandler,
-)
+	
 }

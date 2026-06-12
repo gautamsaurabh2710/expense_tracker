@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"io"
 	"log"
+	"strings"
 
 	"expense-tracker/services"
 
@@ -42,6 +43,35 @@ func TelegramWebhookHandler(c *gin.Context) {
 	log.Println("CHAT ID:", payload.Message.Chat.ID)
 
 	text := payload.Message.Text
+
+	if strings.HasPrefix(text, "/link") {
+
+		code := strings.TrimSpace(
+			strings.Replace(text, "/link", "", 1),
+
+		)
+
+		err := services.LinkTelegramAccount(
+			chatID,
+			code,
+		)
+
+		if err != nil{
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "telegram linked successfully",
+		})
+
+		return
+	}
+
+
 	chatID := payload.Message.Chat.ID
 	if chatID == 0 {
 		chatID = payload.Message.From.ID
@@ -75,4 +105,26 @@ func TelegramWebhookHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "telegram message received"})
+}
+
+func GenerateTelegramCode(c *gin.Context) {
+
+	userID := c.MustGet("userID").(string)
+
+	code := utils.GenerateTelegramCode()
+
+	err := repositories.SaveTelegramLinkCode(userId, code)
+	
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error()
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"message": "Send /link" + code + "to Telegram Bot,"
+	})
 }

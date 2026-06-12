@@ -15,10 +15,11 @@ type User struct {
 	Verified  bool               `bson:"verified" json:"verified"`
 	LoginType string             `bson:"login_type" json:"login_type"`
 
-	TrackEmail     bool   `bson:"track_email" json:"track_email"`
-	TrackTelegram  bool   `bson:"track_telegram" json:"track_telegram"`
-	TrackSMS       bool   `bson:"track_sms" json:"track_sms"`
-	TelegramChatID string `bson:"telegram_chat_id,omitempty" json:"telegram_chat_id"`
+	TrackEmail       bool   `bson:"track_email" json:"track_email"`
+	TrackTelegram    bool   `bson:"track_telegram" json:"track_telegram"`
+	TrackSMS         bool   `bson:"track_sms" json:"track_sms"`
+	TelegramChatID   string `bson:"telegram_chat_id,omitempty" json:"telegram_chat_id"`
+	TelegramLinkCode string `bson:"telegram_link_code,omitempty"`
 
 	CreatedAt time.Time `bson:"created_at"`
 }
