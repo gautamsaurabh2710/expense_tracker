@@ -110,7 +110,7 @@ func TelegramWebhookHandler(c *gin.Context) {
 
 func GenerateTelegramCode(c *gin.Context) {
 
-	userID := c.MustGet("userID").(string)
+	userID := c.MustGet("user_id").(string)
 
 	code := utils.GenerateTelegramCode()
 
