@@ -18,10 +18,11 @@ func SaveTelegramLinkCode(userID string, code string) error {
 	objID, err := primitive.ObjectIDFromHex(userID)
 
 	if err != nil {
+		log.Println("OBJECT ID ERROR:", err)
 		return err
 	}
 
-	_, err = config.DB.Collection("users").UpdateOne(
+	result, err = config.DB.Collection("users").UpdateOne(
 		context.Background(),
 		bson.M{
 			"_id": objID,
