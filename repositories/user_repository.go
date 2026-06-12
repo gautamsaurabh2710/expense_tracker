@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"expense-tracker/config"
 	"expense-tracker/models"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -15,12 +16,11 @@ func SaveTelegramLinkCode(userID string, code string) error {
 		return err
 	}
 
-	_, err = config.DBCollection("users").UpdateOne(
+	_, err = config.DB.Collection("users").UpdateOne(
 		context.Background(),
 		bson.M{
 			"_id": objID,
 		},
-
 		bson.M{
 			"$set": bson.M{
 				"telegram_link_code": code,

@@ -10,7 +10,7 @@ func GenerateTelegramCode() string {
 
 	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-	code := make([byte, 6])
+	code := make([]byte, 6)
 	
 	for i := range code {
 
