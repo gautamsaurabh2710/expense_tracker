@@ -4,12 +4,17 @@ import (
 	"context"
 	"expense-tracker/config"
 	"expense-tracker/models"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func SaveTelegramLinkCode(userID string, code string) error {
+
+	log.Println("USER ID:", userID)
+	log.Println("CODE:", code)
+
 	objID, err := primitive.ObjectIDFromHex(userID)
 
 	if err != nil {
@@ -27,6 +32,10 @@ func SaveTelegramLinkCode(userID string, code string) error {
 			},
 		},
 	)
+
+	log.Println("MATCHED:", result.MatchedCount)
+	log.Println("MODIFIED:", result.ModifiedCount)
+	log.Println("UPDATE ERROR:", err)
 
 	return err
 }
