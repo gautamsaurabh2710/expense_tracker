@@ -1,6 +1,12 @@
 package repositories
 
+import (
+	"context"
+	"expense-tracker/models"
 
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 func SaveTelegramLinkCode(userID string, code string) error {
 	objID, err := primitive.ObjectIDFromHex(userID)
