@@ -22,7 +22,7 @@ func SaveTelegramLinkCode(userID string, code string) error {
 		return err
 	}
 
-	result, err = config.DB.Collection("users").UpdateOne(
+	result, err := config.DB.Collection("users").UpdateOne(
 		context.Background(),
 		bson.M{
 			"_id": objID,
