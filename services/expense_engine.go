@@ -5,6 +5,7 @@ import (
 	"expense-tracker/repositories"
 	"expense-tracker/utils"
 	"fmt"
+	"log"
 	"time"
 )
 
@@ -18,6 +19,11 @@ type ExpenseInput struct {
 }
 
 func ProcessExpense(input ExpenseInput) error {
+
+	log.Println("PROCESSING EXPENSE")
+	log.Println("USER ID:", input.UserID)
+	log.Println("AMOUNT:", input.Amount)
+
 	if input.Amount <= 0 {
 		return fmt.Errorf("amount must be greater than zero")
 	}
@@ -49,10 +55,14 @@ func ProcessExpense(input ExpenseInput) error {
 		CreatedAt: time.Now(),
 	}
 
+	log.Println("EXPENSE OBJECT:", expense)
+
 	//SAVE TO DB
 	if err := repositories.CreateExpense(expense); err != nil {
 		return err
 	}
+
+	log.Println("EXPENSE SAVED SUCCESSFULLY")
 
 	go CheckBudget(input.UserID)
 	return nil

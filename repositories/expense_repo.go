@@ -6,6 +6,7 @@ import (
 	"expense-tracker/models"
 	"regexp"
 	"time"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -13,8 +14,12 @@ import (
 )
 
 func CreateExpense(exp models.Expense) error {
-	_, err := config.DB.Collection("expenses").
+	result, err := config.DB.Collection("expenses").
 		InsertOne(context.Background(), exp)
+
+    log.Println("INSERT RESULT:", result.InsertedID)
+	log.Println("INSERT ERROR:", err)
+
 	return err
 }
 

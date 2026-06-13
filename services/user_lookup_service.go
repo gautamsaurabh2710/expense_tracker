@@ -6,6 +6,7 @@ import (
 	"expense-tracker/config"
 	"expense-tracker/models"
 	"expense-tracker/utils"
+	"log"
 	"regexp"
 	"strconv"
 
@@ -33,10 +34,14 @@ func ProcessExpenseForEmail(email string, input ExpenseInput) error {
 }
 
 func ProcessExpenseForTelegram(chatID int64, input ExpenseInput) error {
+
+	log.Println("TELEGRAM CHAT ID:", chatID)
 	user, err := FindUserByTelegramChatID(chatID)
 	if err != nil {
 		return err
 	}
+
+	log.Println("USER FOUND:", user.ID.Hex())
 
 	input.UserID = user.ID.Hex()
 	return ProcessExpense(input)
